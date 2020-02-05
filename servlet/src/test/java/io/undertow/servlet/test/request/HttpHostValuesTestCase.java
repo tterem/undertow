@@ -37,6 +37,8 @@ import org.junit.runner.RunWith;
 
 import javax.servlet.ServletException;
 
+import java.net.InetAddress;
+
 import static io.undertow.servlet.Servlets.servlet;
 
 /**
@@ -83,10 +85,18 @@ public class HttpHostValuesTestCase {
             Assert.assertEquals(StatusCodes.OK, result.getStatusLine().getStatusCode());
             final String response = HttpClientUtils.readResponse(result);
 
-            if(System.getProperty("os.name").toLowerCase().contains("windows") || System.getSecurityManager() != null) {
-                Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getDefaultServerAddress().toString(), response), DefaultServer.getDefaultServerAddress().toString().contains(response));
+            if (DefaultServer.isProxy()) {
+                if(System.getProperty("os.name").toLowerCase().contains("windows") || System.getSecurityManager() != null) {
+                    Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getDefaultServerAddress().toString(), response), DefaultServer.getDefaultServerAddress().toString().contains(response));
+                } else {
+                    Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getHostAddress(), response), DefaultServer.getHostAddress().equals(response));
+                }
             } else {
-                Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getHostAddress(), response), DefaultServer.getHostAddress().equals(response));
+                if(System.getProperty("os.name").toLowerCase().contains("windows") || System.getSecurityManager() != null) {
+                    Assert.assertTrue(String.format("hostName: %s , response: %s", InetAddress.getLocalHost().getHostName(), response), InetAddress.getLocalHost().getHostName().equals(response));
+                } else {
+                    Assert.assertTrue(String.format("hostName: %s , response: %s", InetAddress.getLocalHost().getCanonicalHostName(), response), InetAddress.getLocalHost().getCanonicalHostName().equals(response));
+                }
             }
 
         } finally {
