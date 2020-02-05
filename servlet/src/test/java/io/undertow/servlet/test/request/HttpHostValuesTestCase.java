@@ -84,9 +84,9 @@ public class HttpHostValuesTestCase {
             final String response = HttpClientUtils.readResponse(result);
 
             if(System.getProperty("os.name").toLowerCase().contains("windows") || System.getSecurityManager() != null) {
-                Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getDefaultServerAddress().toString(), response), DefaultServer.getDefaultServerAddress().toString().contains(response));
+                Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getDefaultServerAddress().toString(), response), DefaultServer.getDefaultServerAddress().toString().contains(response + "x"));
             } else {
-                Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getHostAddress(), response), DefaultServer.getHostAddress().equals(response));
+                Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getHostAddress(), response), DefaultServer.getHostAddress().equals(response + "x"));
             }
 
         } finally {
