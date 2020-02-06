@@ -85,20 +85,15 @@ public class HttpHostValuesTestCase {
             Assert.assertEquals(StatusCodes.OK, result.getStatusLine().getStatusCode());
             final String response = HttpClientUtils.readResponse(result);
 
-            if (DefaultServer.isProxy()) {
-                if(System.getProperty("os.name").toLowerCase().contains("windows") || System.getSecurityManager() != null) {
-                    Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getDefaultServerAddress().toString(), response), DefaultServer.getDefaultServerAddress().toString().contains(response));
-                } else {
-                    Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getHostAddress(), response), DefaultServer.getHostAddress().equals(response));
-                }
+            if(System.getProperty("os.name").toLowerCase().contains("windows") || System.getSecurityManager() != null) {
+                Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getDefaultServerAddress().toString(), response), DefaultServer.getDefaultServerAddress().toString().contains(response));
             } else {
-                if(System.getProperty("os.name").toLowerCase().contains("windows") || System.getSecurityManager() != null) {
-                    Assert.assertTrue(String.format("hostName: %s , response: %s", InetAddress.getLocalHost().getHostName(), response), InetAddress.getLocalHost().getHostName().equals(response));
+                if (DefaultServer.isProxy()) {
+                    Assert.assertTrue(String.format("hostName: %s , response: %s", DefaultServer.getHostAddress(), response), DefaultServer.getHostAddress().equals(response));
                 } else {
                     Assert.assertTrue(String.format("hostName: %s , response: %s", InetAddress.getLocalHost().getCanonicalHostName(), response), InetAddress.getLocalHost().getCanonicalHostName().equals(response));
                 }
             }
-
         } finally {
             client.close();
         }
